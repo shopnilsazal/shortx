@@ -3,7 +3,7 @@
 
 Built with Flask and MongoDB.
 
-![alt Screenshot](https://github.com/shopnilsazal/shortx/raw/master/static/screenshot.png "ShortX screenshot")
+![alt Screenshot](https://github.com/shopnilsazal/shortx/raw/master/static/screenshot.jpg "ShortX screenshot")
 
 ## Instructions
 
