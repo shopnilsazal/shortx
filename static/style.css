@@ -1,0 +1,45 @@
+body {
+    background: #fff;
+    padding: 40px;
+}
+pre {
+    padding-top: 25px;
+}
+code {
+    border-radius: 0;
+    font-size: 95%;
+    margin: 0;
+    white-space: nowrap;
+    border-left: 2px solid #9b4dca;
+}
+
+.body:before, .body:after {
+    height: 40px;
+}
+
+.boxed {
+    background: #f8f3fb;
+    position: relative;
+    padding: 40px;
+}
+.boxed::before {
+    background: #f8f3fb;
+    content: '';
+    height: 90vh;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+.center {
+    text-align: center;
+}
+
+img {
+    max-width: 100%;
+}
+
+.error {
+    padding-top: 30px;
+    color: #e53935;
+}

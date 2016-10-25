@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %} ShortX | URL Shortener {% endblock %}
+
+{% block content %}
+
+    <h1 class="center logo">ShortX</h1>
+
+    <h5 class="center">A URL shortener service.</h5>
+
+    <form action="{{ url_for('add_url') }}" method="post" role="form">
+        <fieldset>
+            <label for="long-url">Long URL</label>
+            <input type="text" name="long-url" placeholder="Enter Long URL" id="long-url">
+            <label for="short-url">Short URL (Optional)</label>
+            <input type="text" name="short-url" placeholder="Your Preferred Short URL" id="short-url">
+            <input class="button-primary" type="submit" value="Shorten">
+        </fieldset>
+    </form>
+
+    {% if err_msg %}
+        <div class="error">
+            <h4>{{ err_msg }}</h4>
+        </div>
+    {% endif %}
+
+    {% if shorted_url %}
+        <p>You shortened url is: {{ shorted_url }}</p>
+    {% endif %}
+
+
+{% endblock %}
