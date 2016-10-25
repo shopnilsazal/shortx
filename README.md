@@ -1,5 +1,5 @@
 # ShortX
-### A URL shortener with API.
+### An URL shortener with API.
 
 Built with Flask and MongoDB.
 
