@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %} Success {% endblock %}
+
+{% block content %}
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="success">
+                {% for message in messages %}
+                    <h4>{{ message }}</h4>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <a class="button button-outline" href="{{ url_for('index') }}">Return Home</a>
+
+{% endblock %}

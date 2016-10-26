@@ -4,9 +4,19 @@
 
 {% block content %}
 
-<h1 class="error">Oops...</h1>
-<h2>Something bad happened...</h2>
+    <h1 class="error">Oops...</h1>
+    <h2>Something bad happened...</h2>
+    {% if err %}
+        <h4>{{ err }}</h4>
+    {% endif %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <h4>{{ message }}</h4>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
-<a class="button button-outline" href="{{ url_for('index') }}">Return Home</a>
+    <a class="button button-outline" href="{{ url_for('index') }}">Return Home</a>
 
 {% endblock %}

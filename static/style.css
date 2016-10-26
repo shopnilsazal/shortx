@@ -39,7 +39,10 @@ img {
     max-width: 100%;
 }
 
+.error, .success {
+    padding-top: 100px;
+    padding-bottom: 30px;
+}
 .error {
-    padding-top: 30px;
     color: #e53935;
 }
