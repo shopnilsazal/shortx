@@ -28,15 +28,29 @@ def valid_url(long_url):
     return protocol_exists
 
 
-def already_exists(alias):
+def already_exists(alias, url='short_url'):
     """
-    Check if alias already exists in database or not
+    checking url already exist or not
     :param alias:
-    :return: Boolean
+    :param url:
+    :return: boolean
     """
     urls = db.urls
-    if urls.find_one({'short_url': alias}):
+    if urls.find_one({url: alias}):
         return True
+    return False
+
+
+def get_short_url(url):
+    """
+    get short url
+    :param url:
+    :return: string
+    """
+    urls = db.urls
+    q = urls.find_one({'long_url': url})
+    if q:
+        return q['short_url']
     return False
 
 
@@ -102,41 +116,67 @@ def add_url():
     urls = db.urls
 
     if request.json:
-        if valid_url(request.json['long_url']):
-            long_url = request.json['long_url']
-        else:
-            return jsonify({'result': 'Please provide a valid URL.'})
-        short_url = request.json['short_url'] if request.json['short_url'] else shorten('')
+        json_output = {}
+        for long in request.json:
+            if valid_url(request.json[long]) and not already_exists(request.json[long], url='long_url'):
+                json_long_url = request.json[long]
+
+                json_short_url = shorten('')
+                json_url_id = urls.insert({
+                    'long_url': json_long_url,
+                    'short_url': json_short_url,
+                    'clicks': 0,
+                    'created_at': datetime.now()
+                })
+
+                json_new_url = urls.find_one({'_id': json_url_id})
+                json_output[json_new_url['long_url']] = request.url_root + json_new_url['short_url']
+
+            elif already_exists(request.json[long], url='long_url'):
+                json_output[request.json[long]] = request.url_root + get_short_url(request.json[long])
+
+            else:
+                return jsonify({'result': 'Please provide a valid URL.'})
+
+        return jsonify(json_output), 200
+
     elif request.form:
-        if valid_url(request.form['long-url']):
+        if valid_url(request.form['long-url']) and not already_exists(request.form['long-url'], url='long_url'):
             long_url = request.form['long-url']
+            short_url = request.form['short-url'] if request.form['short-url'] else shorten('')
+
+            url_id = urls.insert({
+                'long_url': long_url,
+                'short_url': short_url,
+                'clicks': 0,
+                'created_at': datetime.now()
+            })
+
+            new_url = urls.find_one({'_id': url_id})
+            output = {
+                'long_url': new_url['long_url'],
+                'short_url': new_url['short_url'],
+                'clicks': new_url['clicks'],
+                'created_at': new_url['created_at']
+            }
+
+        elif already_exists(request.form['long-url'], url='long_url'):
+            short_url = get_short_url(request.form['long-url'])
+
+            output = {
+                'long_url': request.form['long-url'],
+                'short_url': short_url,
+            }
+
         else:
             flash('Please provide a valid URL.')
             return redirect(url_for('error'))
-        short_url = request.form['short-url'] if request.form['short-url'] else shorten('')
+
+        flash('Your Shortened URL: ' + request.url_root + output['short_url'])
+        return redirect(url_for('success'))
+
     else:
         return abort(400)
-
-    url_id = urls.insert({
-        'long_url': long_url,
-        'short_url': short_url,
-        'clicks': 0,
-        'created_at': datetime.now()
-    })
-
-    new_url = urls.find_one({'_id': url_id})
-    output = {
-        'long_url': new_url['long_url'],
-        'short_url': new_url['short_url'],
-        'clicks': new_url['clicks'],
-        'created_at': new_url['created_at']
-    }
-    status = 200
-
-    if request.json:
-        return jsonify({'result': output}), status
-    flash('Your Shortened URL: '+request.url_root+output['short_url'])
-    return redirect(url_for('success'))
 
 
 @app.route('/api/url/<short_url>', methods=['GET'])
